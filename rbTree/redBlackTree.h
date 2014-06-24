@@ -22,7 +22,7 @@ public:
 	RedBlackTreeNode<T> *right;
 	RedBlackTreeNode<T> *parent;
 	int color;
-}
+};
 
 template <typename T>
 class RedBlackTree {
@@ -52,6 +52,6 @@ private:
 	int rb_delete_fixup(RedBlackTreeNode<T>* rbtnode);
 	void rb_transpalnt(RedBlackTreeNode<T>* node_u, RedBlackTreeNode<T>* node_v);
 	void make_empty(RedBlackTreeNode<T>* root);
-}
+};
 
 #endif

@@ -1,12 +1,12 @@
 /*************************************************************************
-    > File Name: redBlackTree.cc
-    > Author: xuyue
-    > Mail: xuyue0531@gmail.com 
-    > Created Time: 2014年06月21日 星期六 14时39分54秒
+  > File Name: redBlackTree.cc
+  > Author: xuyue
+  > Mail: xuyue0531@gmail.com 
+  > Created Time: 2014年06月21日 星期六 14时39分54秒
  ************************************************************************/
 
 #include<iostream>
-#include "rbTree.h"
+#include "redBlackTree.h"
 using namespace std;
 
 template <typename T>
@@ -14,13 +14,17 @@ RedBlackTreeNode<T>* RedBlackTree<T>::NIL = new RedBlackTreeNode<T>;    //初始
                                                                         //见http://blog.chinaunix.net/uid-12664992-id-129804.html
 
 template <typename T>
-RedBlackTree<T>::RedBlackTreeNode() {
+RedBlackTree<T>::RedBlackTree() {
 	root = NULL;
 }
 
 template <typename T>
 RedBlackTreeNode<T>* RedBlackTree<T>::get_root() const {
-	return root;
+	if(root) {
+		return root;
+	}
+	cout << "The rbtree is empty!" << endl;
+	return NIL;
 }
 
 template <typename T>
@@ -41,7 +45,7 @@ RedBlackTreeNode<T>* RedBlackTree<T>::get_right(RedBlackTreeNode<T>* rbtnode) co
 
 
 template <typename T>
-T RedBlackTree::get_key(RedBlackTreeNode<T>* rbtnode) const {
+T RedBlackTree<T>::get_key(RedBlackTreeNode<T>* rbtnode) const {
 	return rbtnode->key;
 }
 
@@ -59,7 +63,7 @@ void RedBlackTree<T>::set_color(RedBlackTreeNode<T>* rbtnode, int color) {
 
 
 template <typename T>
-void make_empty(RedBlackTreeNode<T>* root) {
+void RedBlackTree<T>::make_empty(RedBlackTreeNode<T>* root) {
 	if(root) {
 		RedBlackTreeNode<T>* pleft = root->left;
 		RedBlackTreeNode<T>* pright = root->right;
@@ -73,7 +77,7 @@ void make_empty(RedBlackTreeNode<T>* root) {
 
 
 template <typename T>
-int redBlackTree<T>::left_rotate(RedBlackTreeNode<T>* rbtnode) {
+int RedBlackTree<T>::left_rotate(RedBlackTreeNode<T>* rbtnode) {
 	RedBlackTreeNode<T>* rightnode = rbtnode->right;
 	rbtnode->right = rightnode->left;
 	if(rightnode->left != NIL)
@@ -98,9 +102,9 @@ RedBlackTree<T>::~RedBlackTree() {
 
 
 template <typename T>
-int redBlackTree<T>::right_rotate(RedBlackTreeNode<T>* rbtnode) {
+int RedBlackTree<T>::right_rotate(RedBlackTreeNode<T>* rbtnode) {
 	RedBlackTreeNode<T>* leftnode = rbtnode->left;
-	rbtnode->left = rightnode->right;
+	rbtnode->left = leftnode->right;
 	if(leftnode->right != NIL)
 		leftnode->right->parent = rbtnode;
 	leftnode->parent = rbtnode->parent;
@@ -127,7 +131,7 @@ int RedBlackTree<T>::insert_key(const T& k) {
 
 	RedBlackTreeNode<T>* tmpnode_y = NIL;
 	RedBlackTreeNode<T>* tmpnode_x = root;
-	while(tmpnode_x != NIL) {
+	while(tmpnode_x != NIL && root != NULL) {
 		tmpnode_y = tmpnode_x;
 		if(newnode->key < tmpnode_x->key)
 			tmpnode_x = tmpnode_x->left;
@@ -162,6 +166,7 @@ int RedBlackTree<T>::rb_insert_fixup(RedBlackTreeNode<T>* rbtnode) {
 				tmpnode_y->color = BLACK;
 				rbtnode->parent->parent->color = RED;
 				rbtnode = rbtnode->parent->parent;
+				continue;
 			}
 			else if(rbtnode == rbtnode->parent->right) {
 				rbtnode = rbtnode->parent;
@@ -178,6 +183,7 @@ int RedBlackTree<T>::rb_insert_fixup(RedBlackTreeNode<T>* rbtnode) {
 				tmpnode_y->color = BLACK;
 				rbtnode->parent->parent->color = RED;
 				rbtnode = rbtnode->parent->parent;
+				continue;
 			}
 			else if(rbtnode == rbtnode->parent->left) {
 				rbtnode = rbtnode->parent;
@@ -188,6 +194,7 @@ int RedBlackTree<T>::rb_insert_fixup(RedBlackTreeNode<T>* rbtnode) {
 			right_rotate(rbtnode->parent->parent);
 		}
 	}
+	root->color = BLACK;
 	return 0;
 }
 
@@ -195,8 +202,10 @@ int RedBlackTree<T>::rb_insert_fixup(RedBlackTreeNode<T>* rbtnode) {
 template <typename T>
 int RedBlackTree<T>::delete_key(const T& k) {
 	RedBlackTreeNode<T>* tmpnode_z = search_tree_node(k);
-	if(tmpnode_z == NIL)
+	if(tmpnode_z == NIL) {
+		cout << "NO element in the rbtree!" << endl;
 		return -1;
+	}
 
 	RedBlackTreeNode<T>* tmpnode_y = tmpnode_z;
 	RedBlackTreeNode<T>* tmpnode_x = NULL;
@@ -206,9 +215,10 @@ int RedBlackTree<T>::delete_key(const T& k) {
 		tmpnode_x = tmpnode_z->right;
 		rb_transpalnt(tmpnode_z, tmpnode_z->right);
 	}
-	else if(tmpnode_z->right == NIL)
+	else if(tmpnode_z->left != NIL && tmpnode_z->right == NIL) {
 		tmpnode_x = tmpnode_z->left;
-	rb_transpalnt(tmpnode_z, tmpnode_z->left);
+		rb_transpalnt(tmpnode_z, tmpnode_z->left);
+	}
 	else {
 		tmpnode_y = tree_minimum(tmpnode_z->right);
 		y_original_color = tmpnode_y->color;
@@ -225,7 +235,7 @@ int RedBlackTree<T>::delete_key(const T& k) {
 		tmpnode_y->left->parent = tmpnode_y;
 		tmpnode_y->color = tmpnode_z->color;
 	}
-	if(y_original_color == BLACK)
+	if(root != NULL && y_original_color == BLACK)
 		rb_delete_fixup(tmpnode_x);
 	return 0;
 }
@@ -242,22 +252,27 @@ int RedBlackTree<T>::rb_delete_fixup(RedBlackTreeNode<T>* rbtnode) {
 				rbtnode->parent->color = RED;
 				left_rotate(rbtnode->parent);
 				tmpnode_w = rbtnode->parent->right;
+				continue;
 			}
 			if(tmpnode_w->left->color == BLACK && tmpnode_w->right->color == BLACK) {
 				tmpnode_w->color = RED;
 				rbtnode = rbtnode->parent;
+				continue;
 			}
 			else if(tmpnode_w->right->color == BLACK) {
 				tmpnode_w->left->color = BLACK;
 				tmpnode_w->color = RED;
 				right_rotate(tmpnode_w);
 				tmpnode_w = rbtnode->parent->right;
+				continue;
 			}
-			tmpnode_w->color = rbtnode->parent->color;
-			rbtnode->parent->color = BLACK;
-			tmpnode_w->right->color BLACK;
-			left_rotate(rbtnode->parent);
-			rbtnode = root;
+			else {
+				tmpnode_w->color = rbtnode->parent->color;
+				rbtnode->parent->color = BLACK;
+				tmpnode_w->right->color = BLACK;
+				left_rotate(rbtnode->parent);
+				rbtnode = root;
+			}
 		}
 		else {
 			tmpnode_w = rbtnode->parent->left;
@@ -266,30 +281,38 @@ int RedBlackTree<T>::rb_delete_fixup(RedBlackTreeNode<T>* rbtnode) {
 				rbtnode->parent->color = RED;
 				right_rotate(rbtnode->parent);
 				tmpnode_w = rbtnode->parent->left;
+				continue;
 			}
 			if(tmpnode_w->right->color == BLACK && tmpnode_w->left->color == BLACK) {
 				tmpnode_w->color = RED;
 				rbtnode = rbtnode->parent;
+				continue;
 			}
 			else if(tmpnode_w->left->color == BLACK) {
 				tmpnode_w->right->color = BLACK;
 				tmpnode_w->color = RED;
 				left_rotate(tmpnode_w);
 				tmpnode_w = rbtnode->parent->left;
+				continue;
 			}
-			tmpnode_w->color = rbtnode->parent->color;
-			rbtnode->parent->color = BLACK;
-			tmpnode_w->left->color BLACK;
-			right_rotate(rbtnode->parent);
-			rbtnode = root;
+			else {
+				tmpnode_w->color = rbtnode->parent->color;
+				rbtnode->parent->color = BLACK;
+				tmpnode_w->left->color = BLACK;
+				right_rotate(rbtnode->parent);
+				rbtnode = root;
+			}
 		}
 	}
+	rbtnode->color = BLACK;
 }
 
 
 template <typename T>
 RedBlackTreeNode<T>* RedBlackTree<T>::search_tree_node(const T& k) const {
 	RedBlackTreeNode<T>* pnode = root;
+	if(root == NULL)
+		return NIL;
 	while(pnode != NIL) {
 		if(pnode->key == k)
 			break;
@@ -304,8 +327,13 @@ RedBlackTreeNode<T>* RedBlackTree<T>::search_tree_node(const T& k) const {
 
 template <typename T>
 void RedBlackTree<T>::rb_transpalnt(RedBlackTreeNode<T>* node_u, RedBlackTreeNode<T>* node_v) {
-	if(node_u->parent == NIL)
+	if(node_u->parent == NIL){
 		root = node_v;
+		if(node_u->left == NIL && node_u->right == NIL) {
+			root = NULL;
+			return;
+		}
+	}
 	else if(node_u == node_u->parent->left)
 		node_u->parent->left = node_v;
 	else
@@ -328,3 +356,54 @@ RedBlackTreeNode<T>* RedBlackTree<T>::tree_minimum(RedBlackTreeNode<T>* root) {
 
 
 
+int main() {
+	RedBlackTree<int> rbtree;
+
+	rbtree.insert_key(41);
+	cout << "#1" << endl;
+	rbtree.insert_key(38);
+	cout << "#2" << endl;
+	rbtree.insert_key(31);
+	cout << "#3" << endl;
+	rbtree.insert_key(12);
+	cout << "#4" << endl;
+	rbtree.insert_key(19);
+	cout << "#5" << endl;
+	rbtree.insert_key(8);
+	cout << "#6" << endl;
+	rbtree.insert_key(32);
+	cout << "#7" << endl;
+	rbtree.insert_key(10);
+	cout << "#8" << endl;
+	rbtree.insert_key(1);
+	cout << "#9" << endl;
+	rbtree.insert_key(65);
+	cout << "#10" << endl;
+	rbtree.delete_key(32);
+	cout << "#9" << endl;
+	rbtree.delete_key(19);
+	cout << "#8" << endl;
+	rbtree.delete_key(12);
+	cout << "#7" << endl;
+	rbtree.delete_key(11);
+	cout << "#6" << endl;
+	rbtree.delete_key(41);
+	cout << "#5" << endl;
+	rbtree.delete_key(8);
+	cout << "#4" << endl;
+	rbtree.delete_key(38);
+	cout << "#3" << endl;
+	rbtree.delete_key(1);
+	cout << "#2" << endl;
+	rbtree.delete_key(65);
+	cout << "#1" << endl;
+	rbtree.delete_key(31);
+	cout << "#0" << endl;
+	rbtree.delete_key(31);
+
+
+	cout << "root is: " << rbtree.get_root()->key << endl;
+
+
+	return 0;
+}
