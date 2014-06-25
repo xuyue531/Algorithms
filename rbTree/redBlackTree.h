@@ -31,6 +31,7 @@ public:
 //	int search_element(const T& k) const;
 	int insert_key(const T& k);
 	int delete_key(const T& k);
+	void inorder_tree_walk(RedBlackTreeNode<T>* proot);
 	RedBlackTreeNode<T>* get_root() const;
 	~RedBlackTree();
 

@@ -14,9 +14,8 @@ RedBlackTreeNode<T>* RedBlackTree<T>::NIL = new RedBlackTreeNode<T>;    //初始
                                                                         //见http://blog.chinaunix.net/uid-12664992-id-129804.html
 
 template <typename T>
-RedBlackTree<T>::RedBlackTree() {
-	root = NULL;
-}
+RedBlackTree<T>::RedBlackTree():root(NULL) {}
+
 
 template <typename T>
 RedBlackTreeNode<T>* RedBlackTree<T>::get_root() const {
@@ -27,14 +26,30 @@ RedBlackTreeNode<T>* RedBlackTree<T>::get_root() const {
 	return NIL;
 }
 
+
 template <typename T>
 RedBlackTreeNode<T>* RedBlackTree<T>::get_parent(RedBlackTreeNode<T>* rbtnode) const {
 	return rbtnode->parent;
 }
 
+
 template <typename T>
 RedBlackTreeNode<T>* RedBlackTree<T>::get_left(RedBlackTreeNode<T>* rbtnode) const {
 	return rbtnode->left;
+}
+
+
+template <typename T>
+void RedBlackTree<T>::inorder_tree_walk(RedBlackTreeNode<T>* proot) {
+	if(proot != NULL) {
+		if(proot != NIL) {
+			inorder_tree_walk(proot->left);
+			cout << proot->key << endl;
+			inorder_tree_walk(proot->right);
+		}
+	}
+	else
+		cout << "The tree is empty!" << endl;
 }
 
 
@@ -379,6 +394,11 @@ int main() {
 	cout << "#9" << endl;
 	rbtree.insert_key(65);
 	cout << "#10" << endl;
+
+
+	rbtree.inorder_tree_walk(rbtree.get_root());
+
+
 	rbtree.delete_key(32);
 	cout << "#9" << endl;
 	rbtree.delete_key(19);
@@ -407,3 +427,5 @@ int main() {
 
 	return 0;
 }
+
+
