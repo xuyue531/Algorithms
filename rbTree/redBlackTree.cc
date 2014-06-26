@@ -6,6 +6,7 @@
  ************************************************************************/
 
 #include<iostream>
+#include<sys/time.h>
 #include "redBlackTree.h"
 using namespace std;
 
@@ -202,11 +203,11 @@ int RedBlackTree<T>::rb_insert_fixup(RedBlackTreeNode<T>* rbtnode) {
 			}
 			else if(rbtnode == rbtnode->parent->left) {
 				rbtnode = rbtnode->parent;
-				left_rotate(rbtnode);
+				right_rotate(rbtnode);
 			}
 			rbtnode->parent->color = BLACK;
 			rbtnode->parent->parent->color = RED;
-			right_rotate(rbtnode->parent->parent);
+			left_rotate(rbtnode->parent->parent);
 		}
 	}
 	root->color = BLACK;
@@ -358,8 +359,8 @@ void RedBlackTree<T>::rb_transpalnt(RedBlackTreeNode<T>* node_u, RedBlackTreeNod
 
 
 template <typename T>
-RedBlackTreeNode<T>* RedBlackTree<T>::tree_minimum(RedBlackTreeNode<T>* root) {
-	RedBlackTreeNode<T>* pnode = root;
+RedBlackTreeNode<T>* RedBlackTree<T>::tree_minimum(RedBlackTreeNode<T>* proot) {
+	RedBlackTreeNode<T>* pnode = proot;
 	if(pnode == NIL)
 		return NIL;
 	while(pnode->left != NIL) {
@@ -373,53 +374,72 @@ RedBlackTreeNode<T>* RedBlackTree<T>::tree_minimum(RedBlackTreeNode<T>* root) {
 
 int main() {
 	RedBlackTree<int> rbtree;
+	clock_t start, end;
 
-	rbtree.insert_key(41);
-	cout << "#1" << endl;
-	rbtree.insert_key(38);
-	cout << "#2" << endl;
-	rbtree.insert_key(31);
-	cout << "#3" << endl;
-	rbtree.insert_key(12);
-	cout << "#4" << endl;
-	rbtree.insert_key(19);
-	cout << "#5" << endl;
-	rbtree.insert_key(8);
-	cout << "#6" << endl;
-	rbtree.insert_key(32);
-	cout << "#7" << endl;
-	rbtree.insert_key(10);
-	cout << "#8" << endl;
-	rbtree.insert_key(1);
-	cout << "#9" << endl;
-	rbtree.insert_key(65);
-	cout << "#10" << endl;
+	start = clock();
+	for(int i = 1; i <= 500000; ++i) {
+		rbtree.insert_key(i);
+	}
+	end = clock();
+	cout << "time: " << (static_cast<double>(end - start))/CLOCKS_PER_SEC << endl;
 
 
-	rbtree.inorder_tree_walk(rbtree.get_root());
+	start = clock();
+	for(int i = 1; i <= 500000; ++i) {
+		rbtree.delete_key(i);
+	}
+	end = clock();
+	cout << "time: " << (static_cast<double>(end - start))/CLOCKS_PER_SEC << endl;
 
 
-	rbtree.delete_key(32);
-	cout << "#9" << endl;
-	rbtree.delete_key(19);
-	cout << "#8" << endl;
-	rbtree.delete_key(12);
-	cout << "#7" << endl;
-	rbtree.delete_key(11);
-	cout << "#6" << endl;
-	rbtree.delete_key(41);
-	cout << "#5" << endl;
-	rbtree.delete_key(8);
-	cout << "#4" << endl;
-	rbtree.delete_key(38);
-	cout << "#3" << endl;
-	rbtree.delete_key(1);
-	cout << "#2" << endl;
-	rbtree.delete_key(65);
-	cout << "#1" << endl;
-	rbtree.delete_key(31);
-	cout << "#0" << endl;
-	rbtree.delete_key(31);
+
+
+//	rbtree.insert_key(41);
+//	cout << "#1" << endl;
+//	rbtree.insert_key(38);
+//	cout << "#2" << endl;
+//	rbtree.insert_key(31);
+//	cout << "#3" << endl;
+//	rbtree.insert_key(12);
+//	cout << "#4" << endl;
+//	rbtree.insert_key(19);
+//	cout << "#5" << endl;
+//	rbtree.insert_key(8);
+//	cout << "#6" << endl;
+//	rbtree.insert_key(32);
+//	cout << "#7" << endl;
+//	rbtree.insert_key(10);
+//	cout << "#8" << endl;
+//	rbtree.insert_key(1);
+//	cout << "#9" << endl;
+//	rbtree.insert_key(65);
+//	cout << "#10" << endl;
+
+
+//	rbtree.inorder_tree_walk(rbtree.get_root());
+
+
+//	rbtree.delete_key(32);
+//	cout << "#9" << endl;
+//	rbtree.delete_key(19);
+//	cout << "#8" << endl;
+//	rbtree.delete_key(12);
+//	cout << "#7" << endl;
+//	rbtree.delete_key(11);
+//	cout << "#6" << endl;
+//	rbtree.delete_key(41);
+//	cout << "#5" << endl;
+//	rbtree.delete_key(8);
+//	cout << "#4" << endl;
+//	rbtree.delete_key(38);
+//	cout << "#3" << endl;
+//	rbtree.delete_key(1);
+//	cout << "#2" << endl;
+//	rbtree.delete_key(65);
+//	cout << "#1" << endl;
+//	rbtree.delete_key(31);
+//	cout << "#0" << endl;
+//	rbtree.delete_key(31);
 
 
 	cout << "root is: " << rbtree.get_root()->key << endl;

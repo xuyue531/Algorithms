@@ -7,6 +7,7 @@
 
 #include<iostream>
 #include"avlTree.h"
+#include<sys/time.h>
 using namespace std;
 
 template <typename T>
@@ -286,20 +287,31 @@ AVLTreeNode<T>* AVLTree<T>::tree_minimum(AVLTreeNode<T>* pnode) {
 
 int main() {
 	AVLTree<int> avlTree;
-	avlTree.insert_key(23);
-	avlTree.insert_key(12);
-	avlTree.insert_key(2);
-	avlTree.insert_key(16);
-	avlTree.insert_key(35);
-	avlTree.insert_key(25);
+	clock_t start, end;
 
-	avlTree.delete_key(25);
+	start = clock();
+	for(int i = 1; i <= 10000; ++i) {
+		avlTree.insert_key(i);
+	}
+	end = clock();
+	cout << "time: " << (static_cast<double>(end - start))/CLOCKS_PER_SEC << endl;
+
+
+
+//	avlTree.insert_key(23);
+//	avlTree.insert_key(12);
+//	avlTree.insert_key(2);
+//	avlTree.insert_key(16);
+//	avlTree.insert_key(35);
+//	avlTree.insert_key(25);
+
+//	avlTree.delete_key(25);
 //	avlTree.delete_key(2);
 //	avlTree.delete_key(16);
-	avlTree.delete_key(35);
+//	avlTree.delete_key(35);
 
-	cout << "root: " << avlTree.get_root()->key << endl;
-	avlTree.inorder_tree_walk(avlTree.get_root());
+//	cout << "root: " << avlTree.get_root()->key << endl;
+//	avlTree.inorder_tree_walk(avlTree.get_root());
 
 	return 0;
 }
