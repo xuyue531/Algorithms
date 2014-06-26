@@ -294,8 +294,14 @@ int main() {
 		avlTree.insert_key(i);
 	}
 	end = clock();
-	cout << "time: " << (static_cast<double>(end - start))/CLOCKS_PER_SEC << endl;
+	cout << "insert time: " << (static_cast<double>(end - start))/CLOCKS_PER_SEC << endl;
 
+	start = clock();
+	for(int i = 1; i <= 10000; ++i) {
+		avlTree.delete_key(i);
+	}
+	end = clock();
+	cout << "delete time: " << (static_cast<double>(end - start))/CLOCKS_PER_SEC << endl;
 
 
 //	avlTree.insert_key(23);
