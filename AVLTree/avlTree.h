@@ -7,6 +7,11 @@
 
 #include<iostream>
 using namespace std;
+#define RH -1
+#define LH 1
+#define EH 0
+#define RC 1
+#define LC 0
 
 template <typename T>
 class AVLTreeNode {
@@ -36,9 +41,12 @@ private:
 	int getDepth(const AVLTreeNode<T>* pnode) const;
 	int insert_Key(const T& k, AVLTreeNode<T>* pnode);
 	int delete_key(const T& k, AVLTreeNode<T>* pnode);
+	AVLTreeNode<T>* tree_minimum(AVLTreeNode<T>* pnode);
 	void make_empty(AVLTreeNode<T>* proot);
+	void avl_translate(AVLTreeNode<T>* node_u, AVLTreeNode<T>* node_v);
 	void singleRotateWithL(AVLTreeNode<T>* pnode);
 	void singleRotateWithR(AVLTreeNode<T>* pnode);
+	void avl_delete_fixup(AVLTreeNode<T>* pnode, int flag);
 	inline void rotateWithLR(AVLTreeNode<T>* pnode);
 	inline void rotateWithRL(AVLTreeNode<T>* pnode);
 };

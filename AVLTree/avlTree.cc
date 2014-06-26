@@ -32,7 +32,7 @@ AVLTreeNode<T>* AVLTree<T>::tree_search(const T& k) const {
 
 template <typename T>
 void AVLTree<T>::inorder_tree_walk(AVLTreeNode<T>* proot) {
-	AVLTreeNode<T>* tmpnode_x = proot;
+//	AVLTreeNode<T>* tmpnode_x = proot;
 	//	if(proot != NULL) {
 	if(proot != NIL){
 		inorder_tree_walk(proot->left);
@@ -195,6 +195,92 @@ int AVLTree<T>::insert_key(const T& k) {
 
 template <typename T>
 int AVLTree<T>::delete_key(const T& k) {
+	int flag;
+	AVLTreeNode<T>* delnode = tree_search(k);
+	AVLTreeNode<T>* tmpnode_x = delnode->parent;
+	if(delnode == tmpnode_x->left)
+		flag = LC;
+	else
+		flag = RC;
+	if(delnode->left == NIL)
+		avl_translate(delnode, delnode->right);
+	else if(delnode->right == NIL)
+		avl_translate(delnode, delnode->left);
+	else {
+		AVLTreeNode<T>* tmpnode_y = tree_minimum(delnode->right);
+		tmpnode_x = tmpnode_y->parent;
+		if(tmpnode_y == tmpnode_x->left)
+			flag = LC;
+		else
+			flag = RC;
+		if(tmpnode_y->parent != delnode) {
+			avl_translate(tmpnode_y, tmpnode_y->right);
+			tmpnode_y->right = delnode->right;
+			tmpnode_y->right->parent = tmpnode_y;
+		}
+		avl_translate(delnode, tmpnode_y);
+		tmpnode_y->left = delnode->left;
+		tmpnode_y->left->parent = tmpnode_y;
+	}
+	avl_delete_fixup(tmpnode_x, flag);
+	return 0;
+}
+
+
+template <typename T>
+void AVLTree<T>::avl_delete_fixup(AVLTreeNode<T>* pnode, int flag) {
+	int tmpflag = flag;
+	AVLTreeNode<T>* tmpnode_x = pnode;
+	while(tmpnode_x != NIL) {
+		if(tmpflag == LC) {
+			if(2 == (getDepth(tmpnode_x->right) - getDepth(tmpnode_x->left))) {
+				if(LH == (getDepth(tmpnode_x->right->left) - getDepth(tmpnode_x->right->right)))
+					rotateWithRL(tmpnode_x);
+				else
+					singleRotateWithL(tmpnode_x);
+				break;
+			}
+		}
+		else if(tmpflag == RC) {
+			if(2 == (getDepth(tmpnode_x->left) - getDepth(tmpnode_x->right))) {
+				if(RH == (getDepth(tmpnode_x->left->left) - getDepth(tmpnode_x->left->right)))
+					rotateWithLR(tmpnode_x);
+				else
+					singleRotateWithR(tmpnode_x);
+				break;
+			}	
+		}
+		if(tmpnode_x == tmpnode_x->parent->left)
+			tmpflag = LC;
+		else if(tmpnode_x == tmpnode_x->parent->right)
+			tmpflag = RC;
+		tmpnode_x = tmpnode_x->parent;
+	}
+}
+
+
+template <typename T>
+void AVLTree<T>::avl_translate(AVLTreeNode<T>* node_u, AVLTreeNode<T>* node_v) {
+	if(node_u->parent == NIL) {
+		root = node_v;
+	}
+	else if(node_u == node_u->parent->left)
+		node_u->parent->left = node_v;
+	else
+		node_u->parent->right = node_v;
+	if(node_v != NIL)
+		node_v->parent = node_u->parent;
+}
+
+
+template <typename T>
+AVLTreeNode<T>* AVLTree<T>::tree_minimum(AVLTreeNode<T>* pnode) {
+	AVLTreeNode<T>* tmpnode = pnode;
+	if(tmpnode == NIL)
+		return NIL;
+	while(tmpnode->left != NIL)
+		tmpnode = tmpnode->left;
+	return tmpnode;
 }
 
 
@@ -207,6 +293,12 @@ int main() {
 	avlTree.insert_key(35);
 	avlTree.insert_key(25);
 
+	avlTree.delete_key(25);
+//	avlTree.delete_key(2);
+//	avlTree.delete_key(16);
+	avlTree.delete_key(35);
+
+	cout << "root: " << avlTree.get_root()->key << endl;
 	avlTree.inorder_tree_walk(avlTree.get_root());
 
 	return 0;
