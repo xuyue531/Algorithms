@@ -78,17 +78,19 @@ int partition_random(int a[], int low, int high)
 //	timeval now;
 //	gettimeofday(&now,NULL);
 //	srand(now.tv_usec);
-//	cout << "low: " << low << endl;
-//	cout << "high: " << high << endl;
 //	int num = (rand()%(high-low+1))+low;
 	int num = (rand_r(high)%(high-low+1))+low;
 	if(num == high)
 		goto partition;
-//	cout << "##########1" << endl;
+
 	/*Exchange the num*/
-	a[high] = (a[high])^(a[num]);
-	a[num] = (a[high])^(a[num]);
-	a[high] = (a[high])^(a[num]);
+//	a[high] = (a[high])^(a[num]);
+//	a[num] = (a[high])^(a[num]);
+//	a[high] = (a[high])^(a[num]);
+	int tmp;
+	tmp = a[high];
+	a[high] = a[num];
+	a[num] = a[high];
 
 partition:
 	return partition(a, low, high);
