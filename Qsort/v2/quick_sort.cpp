@@ -45,8 +45,8 @@ clock_t spendofTime(int *data, const int len, void(*func)(int*, int, int))
 
 int partition(int a[], int low, int high)  
 {
-	int pi;
-	int i,j;
+	int pi, tmp;
+	int i, j;
 	if(low < high)
 	{
 		i = low-1;
@@ -56,13 +56,13 @@ int partition(int a[], int low, int high)
 			if(a[j] <= pi)
 			{
 				++i;
-			//	exchange(&a[i], &a[j]);
 				if(i != j)
 				{
-					a[i] = a[i]^a[j];
-					a[j] = a[i]^a[j];
-					a[i] = a[i]^a[j];
+					tmp = a[i];
+					a[i] = a[j];
+					a[j] = tmp;
 				}
+			//	exchange(&a[i], &a[j]);
 			}
 		}
 		exchange(&a[i+1], &a[high]);
