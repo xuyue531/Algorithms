@@ -31,6 +31,13 @@ int cmp(const Task &t1, const Task &t2) {
 		return 0;
 }
 
+int cmp_pre(const Task &t1, const Task &t2) {
+	if(t1.w > t2.w)
+		return 1;
+	else
+		return 0;
+}
+
 int main() {
 	freopen("data.in", "r", stdin);
 	//	freopen("data.out", "w", stdout);
@@ -54,6 +61,8 @@ int main() {
 			continue;
 		}
 	}
+
+	sort(task, task + task_num, cmp_pre);
 
 	int t, count;
 	for(int i = 0; i < task_num; ++i) {
