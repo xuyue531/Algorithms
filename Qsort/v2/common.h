@@ -21,9 +21,10 @@ inline void exchange(int *a, int *b)
 {	
 	if(a != b)
 	{
-		*a = (*a)^(*b);
-		*b = (*a)^(*b);
-		*a = (*a)^(*b);
+		int tmp;
+		tmp = *a;
+		*a = *b;
+		*b = tmp;
 	}
 }
 
