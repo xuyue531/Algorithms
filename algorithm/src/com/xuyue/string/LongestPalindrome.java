@@ -1,7 +1,7 @@
 package com.xuyue.string;
 
 /**
- * 
+ * 参考：https://github.com/julycoding/The-Art-Of-Programming-By-July/blob/master/ebook/zh/01.05.md
  * @author xuyue
  *
  */
@@ -9,7 +9,7 @@ public class LongestPalindrome {
 	
 	public String process(String str) {
 		String tStr = preProcess(str);
-		System.out.println(tStr);
+//		System.out.println(tStr);
 		int tLen = tStr.length();
 		int[] p = new int[tLen];
 		int mx = 0;
@@ -61,7 +61,7 @@ public class LongestPalindrome {
 	
 	public static void main(String[] args) {
 		LongestPalindrome longestPalindrome = new LongestPalindrome();
-		String s = longestPalindrome.process("123132345");
+		String s = longestPalindrome.process("1231321345");
 		System.out.println(s);
 	}
 	
