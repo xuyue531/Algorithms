@@ -34,7 +34,7 @@ public class PlusOne {
 	
 	public static void main(String[] args) {
 		PlusOne plusOne = new PlusOne();
-		int[] input = {9};
+		int[] input = {9,0};
 		int result[] = plusOne.plusOne(input);
 		System.out.println(Arrays.toString(result));
 	}
