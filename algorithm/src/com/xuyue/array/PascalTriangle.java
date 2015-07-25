@@ -35,10 +35,27 @@ public class PascalTriangle {
 		return result;
 	}
 	
+	
+	public List<List<Integer>> generate2(int numRows) {
+		List<List<Integer>> result = new ArrayList<List<Integer>>();
+		for (int i = 0; i < numRows; i++) {
+			List<Integer> line = new ArrayList<Integer>(Arrays.asList(1));
+			for (int j = 1; j < i; j++) {
+				line.add(result.get(i-1).get(j-1) + result.get(i-1).get(j));
+			}
+			if (i>0) {
+				line.add(1);
+			}
+			result.add(line);
+		}
+		return result;
+	}
+	
+	
 	public static void main(String[] args) {
 		PascalTriangle pascalTriangle = new PascalTriangle();	
-		int input = 1;
-		List<List<Integer>> result = pascalTriangle.generate(input);
+		int input = 4;
+		List<List<Integer>> result = pascalTriangle.generate2(input);
 		System.out.println(result.toString());
 	}
 	
